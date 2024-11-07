@@ -25,9 +25,14 @@ public class School {
         this.name = name;
     }
 
+
+
+
     public Integer getId() {
         return id;
     }
+
+
 
     public void setId(Integer id) {
         this.id = id;
@@ -48,4 +53,6 @@ public class School {
     public void setStudents(List<Student> students) {
         this.students = students;
     }
+
+
 }

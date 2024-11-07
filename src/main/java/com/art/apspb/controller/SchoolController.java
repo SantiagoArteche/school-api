@@ -1,8 +1,8 @@
 package com.art.apspb.controller;
 
-
 import com.art.apspb.dto.SchoolDTO;
 import com.art.apspb.model.School;
+import com.art.apspb.model.Student;
 import com.art.apspb.service.SchoolService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/schools")
@@ -22,8 +23,10 @@ public class SchoolController {
     }
 
     @GetMapping
-    public ResponseEntity<List<School>> getSchools(){
-        return ResponseEntity.status(HttpStatus.OK).body(this.schoolService.getAll());
+    public ResponseEntity<List<SchoolDTO>> getSchools(){
+        List<School> schools = this.schoolService.getAll();
+        List<SchoolDTO> schoolsDto = SchoolDTO.toSchoolResponse(schools);
+        return ResponseEntity.status(HttpStatus.OK).body(schoolsDto);
     }
 
     @GetMapping("/{id}")
