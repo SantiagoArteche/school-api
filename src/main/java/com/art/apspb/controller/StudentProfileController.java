@@ -64,9 +64,12 @@ public class StudentProfileController {
         StudentProfile studentProfile = this.studentProfileService.update(id, dto);
         Map<String, Object> response = new HashMap<>();
         HttpStatus status;
-
-        if(studentProfile == null){
-            response.put("Error", "Student profile with id " + id + " not found");
+        if(studentProfile == null || studentProfile.getId() == -1){
+            if(studentProfile != null && studentProfile.getId() == -1){
+                response.put("Error", "Student with id " + dto.studentId() + " not found");
+            }else{
+                response.put("Error", "Student profile with id " + id + " not found");
+            }
             status = HttpStatus.NOT_FOUND;
         }else{
             response.put("Success", "Student profile with id " + id + " was updated");

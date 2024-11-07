@@ -6,10 +6,14 @@ import com.art.apspb.model.StudentProfile;
 public record StudentProfileDTO(String bio, Integer studentId) {
     public static StudentProfile toStudentProfile(StudentProfileDTO studentProfileDTO){
         StudentProfile studentProfile = new StudentProfile();
-        studentProfile.setBio(studentProfileDTO.bio);
-        Student student = new Student();
-        student.setId(studentProfileDTO.studentId);
-        studentProfile.setStudent(student);
+        if(studentProfileDTO.bio != null){
+            studentProfile.setBio(studentProfileDTO.bio);
+        }
+        if(studentProfileDTO.studentId != null){
+            Student student = new Student();
+            student.setId(studentProfileDTO.studentId);
+            studentProfile.setStudent(student);
+        }
         return studentProfile;
     }
 }
