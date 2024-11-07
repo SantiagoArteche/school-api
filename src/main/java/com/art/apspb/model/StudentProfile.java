@@ -52,6 +52,15 @@ public class StudentProfile {
         return bio;
     }
 
+    @Override
+    public String toString() {
+        return "StudentProfile{" +
+                "bio='" + bio + '\'' +
+                ", id=" + id +
+                ", student=" + student +
+                '}';
+    }
+
     public void setBio(String bio) {
         this.bio = bio;
     }

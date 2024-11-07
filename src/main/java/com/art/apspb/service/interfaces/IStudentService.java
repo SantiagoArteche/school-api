@@ -1,5 +1,6 @@
 package com.art.apspb.service.interfaces;
 
+import com.art.apspb.dto.StudentDTO;
 import com.art.apspb.model.Student;
 
 import java.util.List;
@@ -9,6 +10,7 @@ public interface IStudentService {
     Student getById(Integer id);
     List<Student> getByAge(Integer age);
     List<Student> getByName(String name);
-    void update(Student student);
-    void delete(Integer id);
+    Student update(Integer id, StudentDTO dto);
+    void save(StudentDTO dto);
+    boolean delete(Integer id);
 }

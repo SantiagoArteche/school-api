@@ -1,5 +1,7 @@
 package com.art.apspb.service;
 
+import com.art.apspb.dto.SchoolDTO;
+import com.art.apspb.dto.StudentDTO;
 import com.art.apspb.model.School;
 import com.art.apspb.model.Student;
 import com.art.apspb.repository.SchoolRepository;
@@ -28,12 +30,31 @@ public class SchoolService implements ISchoolService {
     }
 
     @Override
-    public void update(School school) {
+    public School update(Integer id, SchoolDTO dto) {
+        School findSchool = this.schoolRepository.findById(id).orElse(null);
+
+        if(findSchool != null){
+            School school = SchoolDTO.toSchool(dto);
+            school.setId(findSchool.getId());
+            this.schoolRepository.save(school);
+        }
+
+        return findSchool;
+    }
+
+    @Override
+    public void save(SchoolDTO dto) {
+        School school = SchoolDTO.toSchool(dto);
         this.schoolRepository.save(school);
     }
 
     @Override
-    public void delete(Integer id) {
-        this.schoolRepository.deleteById(id);
+    public boolean delete(Integer id) {
+        School findSchool = this.schoolRepository.findById(id).orElse(null);
+        if(findSchool != null){
+            this.schoolRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }

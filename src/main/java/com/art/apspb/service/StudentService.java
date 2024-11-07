@@ -1,8 +1,12 @@
 package com.art.apspb.service;
 
+import com.art.apspb.dto.StudentDTO;
+import com.art.apspb.model.School;
 import com.art.apspb.model.Student;
+import com.art.apspb.model.StudentProfile;
 import com.art.apspb.repository.StudentRepository;
 import com.art.apspb.service.interfaces.IStudentService;
+import org.springframework.boot.web.embedded.netty.NettyWebServer;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,6 +30,7 @@ public class StudentService implements IStudentService {
         return this.studentRepository.findById(id).orElse(null);
     }
 
+
     @Override
     public List<Student> getByAge(Integer age) {
         return this.studentRepository.getByAge(age).orElse(null);
@@ -37,12 +42,33 @@ public class StudentService implements IStudentService {
     }
 
     @Override
-    public void delete(Integer id) {
-        this.studentRepository.deleteById(id);
+    public void save(StudentDTO dto){
+        Student student = StudentDTO.toStudent(dto);
+        this.studentRepository.save(student);
     }
 
     @Override
-    public void update(Student student) {
-        this.studentRepository.save(student);
+    public Student update(Integer id, StudentDTO dto) {
+        Student findStudent = this.studentRepository.findById(id).orElse(null);
+
+        if(findStudent != null){
+            Student student = StudentDTO.toStudent(dto);
+            student.setId(findStudent.getId());
+            this.studentRepository.save(student);
+        }
+
+        return findStudent;
     }
+
+    @Override
+    public boolean delete(Integer id) {
+        Student findStudent= this.studentRepository.findById(id).orElse(null);
+        if(findStudent != null){
+            this.studentRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+
+
 }

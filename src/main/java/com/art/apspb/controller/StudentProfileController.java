@@ -1,12 +1,10 @@
 package com.art.apspb.controller;
 
-
-import com.art.apspb.dto.StudentDTO;
 import com.art.apspb.dto.StudentProfileDTO;
-import com.art.apspb.model.Student;
+
 import com.art.apspb.model.StudentProfile;
 import com.art.apspb.service.StudentProfileService;
-import com.art.apspb.service.StudentService;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,26 +28,30 @@ public class StudentProfileController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> getStudentProfileById(@PathVariable Integer id){
-        StudentProfile studentProfile = this.studentProfileService.getById(id);
+    public ResponseEntity<Map<String, Object>> getStudentProfileById(@PathVariable Integer id){
+        StudentProfile findStudentProfile = this.studentProfileService.getById(id);
+        Map<String, Object> response = new HashMap<>();
+        HttpStatus status;
 
-        if(studentProfile == null){
-            Map<String, String> notFound = new HashMap<>();
-            notFound.put("Error", "Student profile with id " + id + " not found");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(notFound);
+        if(findStudentProfile == null){
+            response.put("Error", "Student profile with id " + id + " not found");
+            status = HttpStatus.NOT_FOUND;
+        }else{
+            response.put("Student Profile", findStudentProfile);
+            status = HttpStatus.OK;
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(studentProfile);
+        return ResponseEntity.status(status).body(response);
     }
 
     @PostMapping
     public ResponseEntity<Map<String, Object>> createStudentProfile(@RequestBody StudentProfileDTO dto){
         Map<String, Object> response = new HashMap<>();
+
         try{
-            StudentProfile student = StudentProfileDTO.toStudentProfile(dto);
-            this.studentProfileService.update(student);
+            this.studentProfileService.save(dto);
             response.put("Success", "Student Profile was created!");
-            response.put("Student", student);
+            response.put("Student", dto);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (Exception ex){
             response.put("Error", ex.getMessage());
@@ -58,35 +60,32 @@ public class StudentProfileController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> updateStudentProfile(@PathVariable Integer id, @RequestBody StudentProfile studentProfile){
-        StudentProfile findStudentProfile = this.studentProfileService.getById(id);
+    public ResponseEntity<Map<String, Object>> updateStudentProfile(@PathVariable Integer id, @RequestBody StudentProfileDTO dto){
+        StudentProfile studentProfile = this.studentProfileService.update(id, dto);
         Map<String, Object> response = new HashMap<>();
         HttpStatus status;
-        if(findStudentProfile == null){
+
+        if(studentProfile == null){
             response.put("Error", "Student profile with id " + id + " not found");
             status = HttpStatus.NOT_FOUND;
         }else{
-            findStudentProfile.setBio(studentProfile.getBio());
-            this.studentProfileService.update(findStudentProfile);
             response.put("Success", "Student profile with id " + id + " was updated");
-            response.put("Student Profile", findStudentProfile);
+            response.put("Student Profile", studentProfile);
             status = HttpStatus.OK;
         }
-
         return ResponseEntity.status(status).body(response);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Map<String,String>> deleteStudentProfile(@PathVariable Integer id){
-        StudentProfile school = this.studentProfileService.getById(id);
+        boolean isDeleted = this.studentProfileService.delete(id);
         Map<String, String> response = new HashMap<>();
         HttpStatus status;
 
-        if(school == null){
+        if(!isDeleted){
             response.put("Error", "Student profile with id " + id + " not found");
             status = HttpStatus.NOT_FOUND;
         }else{
-            this.studentProfileService.delete(id);
             response.put("Success", "Student profile with id " + id + " was deleted");
             status = HttpStatus.OK;
         }

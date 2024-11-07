@@ -9,8 +9,12 @@ public record StudentDTO(String name, Integer schoolId, Integer age) {
         student.setName(dto.name);
         student.setAge(dto.age);
         School school = new School();
-        school.setId(dto.schoolId());
-        student.setSchool(school);
+
+        if(dto.schoolId() != null){
+            school.setId(dto.schoolId());
+            student.setSchool(school);
+        }
+
         return student;
     }
 }

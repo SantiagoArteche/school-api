@@ -22,9 +22,8 @@ public class SchoolController {
     }
 
     @GetMapping
-    public ResponseEntity<List<SchoolDTO>> getSchools(){
-        return ResponseEntity.status(HttpStatus.OK).body(this.schoolService.getAll().stream().map(school ->new SchoolDTO(school.getId(),school.getName())
-        ).toList());
+    public ResponseEntity<List<School>> getSchools(){
+        return ResponseEntity.status(HttpStatus.OK).body(this.schoolService.getAll());
     }
 
     @GetMapping("/{id}")
@@ -41,43 +40,46 @@ public class SchoolController {
     }
 
     @PostMapping
-    public ResponseEntity<SchoolDTO> createSchool(@RequestBody SchoolDTO dto){
-        School school = SchoolDTO.toSchool(dto);
-        this.schoolService.update(school);
-        SchoolDTO schoolDTO = new SchoolDTO(school.getId(), dto.name());
-        return ResponseEntity.status(HttpStatus.CREATED).body(schoolDTO);
+    public ResponseEntity<Map<String, Object>> createSchool(@RequestBody SchoolDTO dto){
+        Map<String, Object> response = new HashMap<>();
+        try{
+            this.schoolService.save(dto);
+            response.put("Success", "School was created!");
+            response.put("School", dto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (Exception ex){
+            response.put("Error", ex.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> updateSchool(@PathVariable Integer id, @RequestBody School school){
-        School findSchool = this.schoolService.getById(id);
+    public ResponseEntity<Map<String, Object>> updateSchool(@PathVariable Integer id, @RequestBody SchoolDTO dto){
+        School updateSchool = this.schoolService.update(id, dto);
         Map<String, Object> response = new HashMap<>();
         HttpStatus status;
-        if(findSchool == null){
+
+        if(updateSchool == null){
             response.put("Error", "School with id " + id + " not found");
             status = HttpStatus.NOT_FOUND;
         }else{
-            findSchool.setName(school.getName());
-            this.schoolService.update(findSchool);
             response.put("Success", "School with id " + id + " was updated");
-            response.put("School", findSchool);
+            response.put("School", dto);
             status = HttpStatus.OK;
         }
-
         return ResponseEntity.status(status).body(response);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Map<String,String>> deleteSchool(@PathVariable Integer id){
-        School school = this.schoolService.getById(id);
+        boolean isDeleted = this.schoolService.delete(id);
         Map<String, String> response = new HashMap<>();
         HttpStatus status;
 
-        if(school == null){
+        if(!isDeleted){
             response.put("Error", "School with id " + id + " not found");
             status = HttpStatus.NOT_FOUND;
         }else{
-            this.schoolService.delete(id);
             response.put("Success", "School with id " + id + " was deleted");
             status = HttpStatus.OK;
         }
