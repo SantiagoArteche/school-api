@@ -1,12 +1,9 @@
 package com.art.apspb.service;
 
 import com.art.apspb.dto.StudentDTO;
-import com.art.apspb.model.School;
 import com.art.apspb.model.Student;
-import com.art.apspb.model.StudentProfile;
 import com.art.apspb.repository.StudentRepository;
 import com.art.apspb.service.interfaces.IStudentService;
-import org.springframework.boot.web.embedded.netty.NettyWebServer;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -54,6 +51,11 @@ public class StudentService implements IStudentService {
         if(findStudent != null){
             Student student = StudentDTO.toStudent(dto);
             student.setId(findStudent.getId());
+
+            if(student.getSchool() == null){
+                student.setSchool(findStudent.getSchool());
+            }
+
             this.studentRepository.save(student);
         }
 

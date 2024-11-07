@@ -1,9 +1,10 @@
 package com.art.apspb.controller;
 
 import com.art.apspb.dto.SchoolDTO;
+import com.art.apspb.dto.SchoolResponseDTO;
 import com.art.apspb.model.School;
-import com.art.apspb.model.Student;
 import com.art.apspb.service.SchoolService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/schools")
@@ -23,10 +23,10 @@ public class SchoolController {
     }
 
     @GetMapping
-    public ResponseEntity<List<SchoolDTO>> getSchools(){
+    public ResponseEntity<List<SchoolResponseDTO>> getSchools(){
         List<School> schools = this.schoolService.getAll();
-        List<SchoolDTO> schoolsDto = SchoolDTO.toSchoolResponse(schools);
-        return ResponseEntity.status(HttpStatus.OK).body(schoolsDto);
+        List<SchoolResponseDTO> schoolResponseDto = SchoolResponseDTO.toSchoolResponse(schools);
+        return ResponseEntity.status(HttpStatus.OK).body(schoolResponseDto);
     }
 
     @GetMapping("/{id}")
@@ -47,21 +47,17 @@ public class SchoolController {
     }
 
     @PostMapping
-    public ResponseEntity<Map<String, Object>> createSchool(@RequestBody SchoolDTO dto){
+    public ResponseEntity<Map<String, Object>> createSchool(@Valid @RequestBody SchoolDTO dto) {
         Map<String, Object> response = new HashMap<>();
-        try{
-            this.schoolService.save(dto);
-            response.put("Success", "School was created!");
-            response.put("School", dto);
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        } catch (Exception ex){
-            response.put("Error", ex.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-        }
+
+        this.schoolService.save(dto);
+        response.put("Success", "School was created!");
+        response.put("School", dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> updateSchool(@PathVariable Integer id, @RequestBody SchoolDTO dto){
+    public ResponseEntity<Map<String, Object>> updateSchool(@PathVariable Integer id, @Valid @RequestBody SchoolDTO dto){
         School updateSchool = this.schoolService.update(id, dto);
         Map<String, Object> response = new HashMap<>();
         HttpStatus status;
@@ -71,7 +67,7 @@ public class SchoolController {
             status = HttpStatus.NOT_FOUND;
         }else{
             response.put("Success", "School with id " + id + " was updated");
-            response.put("School", dto);
+            response.put("School", new SchoolDTO(dto.name()));
             status = HttpStatus.OK;
         }
         return ResponseEntity.status(status).body(response);

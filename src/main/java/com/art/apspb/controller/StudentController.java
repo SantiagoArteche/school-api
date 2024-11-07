@@ -1,9 +1,9 @@
 package com.art.apspb.controller;
 
-
 import com.art.apspb.dto.StudentDTO;
 import com.art.apspb.model.Student;
 import com.art.apspb.service.StudentService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -55,21 +55,16 @@ public class StudentController {
     }
 
     @PostMapping
-    public ResponseEntity<Map<String, Object>> createStudent(@RequestBody StudentDTO dto){
+    public ResponseEntity<Map<String, Object>> createStudent(@Valid @RequestBody StudentDTO dto){
         Map<String, Object> response = new HashMap<>();
-        try{
-            this.studentService.save(dto);
-            response.put("Success", "Student was created!");
-            response.put("Student", dto);
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        } catch (Exception ex){
-            response.put("Error", ex.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-        }
+        this.studentService.save(dto);
+        response.put("Success", "Student was created!");
+        response.put("Student", dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> updateStudent(@PathVariable Integer id, @RequestBody StudentDTO dto){
+    public ResponseEntity<Map<String, Object>> updateStudent(@PathVariable Integer id, @Valid @RequestBody StudentDTO dto){
         Student updateStudent = this.studentService.update(id, dto);
         Map<String, Object> response = new HashMap<>();
         HttpStatus status;

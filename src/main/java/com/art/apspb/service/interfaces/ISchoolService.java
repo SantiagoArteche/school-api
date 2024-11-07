@@ -2,7 +2,6 @@ package com.art.apspb.service.interfaces;
 
 import com.art.apspb.dto.SchoolDTO;
 import com.art.apspb.model.School;
-import com.art.apspb.model.Student;
 
 import java.util.List;
 

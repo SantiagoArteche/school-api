@@ -1,9 +1,7 @@
 package com.art.apspb.service;
 
 import com.art.apspb.dto.SchoolDTO;
-import com.art.apspb.dto.StudentDTO;
 import com.art.apspb.model.School;
-import com.art.apspb.model.Student;
 import com.art.apspb.repository.SchoolRepository;
 import com.art.apspb.service.interfaces.ISchoolService;
 import org.springframework.stereotype.Service;
@@ -46,6 +44,7 @@ public class SchoolService implements ISchoolService {
     public void save(SchoolDTO dto) {
         School school = SchoolDTO.toSchool(dto);
         this.schoolRepository.save(school);
+
     }
 
     @Override

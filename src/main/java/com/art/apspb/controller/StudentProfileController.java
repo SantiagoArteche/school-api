@@ -5,8 +5,10 @@ import com.art.apspb.dto.StudentProfileDTO;
 import com.art.apspb.model.StudentProfile;
 import com.art.apspb.service.StudentProfileService;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -15,6 +17,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/students-profiles")
+
 public class StudentProfileController {
     private final StudentProfileService studentProfileService;
 
@@ -45,22 +48,17 @@ public class StudentProfileController {
     }
 
     @PostMapping
-    public ResponseEntity<Map<String, Object>> createStudentProfile(@RequestBody StudentProfileDTO dto){
+    public ResponseEntity<Map<String, Object>> createStudentProfile(@Valid @RequestBody StudentProfileDTO dto){
         Map<String, Object> response = new HashMap<>();
 
-        try{
-            this.studentProfileService.save(dto);
-            response.put("Success", "Student Profile was created!");
-            response.put("Student", dto);
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        } catch (Exception ex){
-            response.put("Error", ex.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-        }
+        this.studentProfileService.save(dto);
+        response.put("Success", "Student Profile was created!");
+        response.put("Student", dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> updateStudentProfile(@PathVariable Integer id, @RequestBody StudentProfileDTO dto){
+    public ResponseEntity<Map<String, Object>> updateStudentProfile(@PathVariable Integer id, @Valid @RequestBody StudentProfileDTO dto){
         StudentProfile studentProfile = this.studentProfileService.update(id, dto);
         Map<String, Object> response = new HashMap<>();
         HttpStatus status;

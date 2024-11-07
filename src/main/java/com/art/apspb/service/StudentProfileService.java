@@ -8,9 +8,7 @@ import com.art.apspb.repository.StudentRepository;
 import com.art.apspb.service.interfaces.IStudentProfileService;
 import org.springframework.stereotype.Service;
 
-
 import java.util.List;
-
 
 @Service
 public class StudentProfileService implements IStudentProfileService {
@@ -70,7 +68,11 @@ public class StudentProfileService implements IStudentProfileService {
     @Override
     public boolean delete(Integer id) {
         StudentProfile findStudentProfile = this.studentProfileRepository.findById(id).orElse(null);
+
         if(findStudentProfile != null){
+            if(findStudentProfile.getStudent().getId() != null){
+                this.studentRepository.deleteById(findStudentProfile.getStudent().getId());
+            }
             this.studentProfileRepository.deleteById(id);
             return true;
         }
