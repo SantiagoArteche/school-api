@@ -1,8 +1,10 @@
 package com.art.apspb.controller;
 
 
+import com.art.apspb.dto.SchoolDTO;
 import com.art.apspb.model.School;
 import com.art.apspb.service.SchoolService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,8 +22,9 @@ public class SchoolController {
     }
 
     @GetMapping
-    public ResponseEntity<List<School>> getSchools(){
-        return ResponseEntity.status(200).body(this.schoolService.getAll());
+    public ResponseEntity<List<SchoolDTO>> getSchools(){
+        return ResponseEntity.status(HttpStatus.OK).body(this.schoolService.getAll().stream().map(school ->new SchoolDTO(school.getId(),school.getName())
+        ).toList());
     }
 
     @GetMapping("/{id}")
@@ -31,32 +34,34 @@ public class SchoolController {
         if(school == null){
             Map<String, String> notFound = new HashMap<>();
             notFound.put("Error", "School with id " + id + " not found");
-            return ResponseEntity.status(404).body(notFound);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(notFound);
         }
 
-        return ResponseEntity.status(200).body(school);
+        return ResponseEntity.status(HttpStatus.OK).body(school);
     }
 
     @PostMapping
-    public ResponseEntity<School> createSchool(@RequestBody School school){
+    public ResponseEntity<SchoolDTO> createSchool(@RequestBody SchoolDTO dto){
+        School school = SchoolDTO.toSchool(dto);
         this.schoolService.update(school);
-        return ResponseEntity.status(201).body(school);
+        SchoolDTO schoolDTO = new SchoolDTO(school.getId(), dto.name());
+        return ResponseEntity.status(HttpStatus.CREATED).body(schoolDTO);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Map<String, Object>> updateSchool(@PathVariable Integer id, @RequestBody School school){
         School findSchool = this.schoolService.getById(id);
         Map<String, Object> response = new HashMap<>();
-        int status;
+        HttpStatus status;
         if(findSchool == null){
             response.put("Error", "School with id " + id + " not found");
-            status = 404;
+            status = HttpStatus.NOT_FOUND;
         }else{
             findSchool.setName(school.getName());
             this.schoolService.update(findSchool);
             response.put("Success", "School with id " + id + " was updated");
             response.put("School", findSchool);
-            status = 200;
+            status = HttpStatus.OK;
         }
 
         return ResponseEntity.status(status).body(response);
@@ -66,15 +71,15 @@ public class SchoolController {
     public ResponseEntity<Map<String,String>> deleteSchool(@PathVariable Integer id){
         School school = this.schoolService.getById(id);
         Map<String, String> response = new HashMap<>();
-        int status;
+        HttpStatus status;
 
         if(school == null){
             response.put("Error", "School with id " + id + " not found");
-            status = 404;
+            status = HttpStatus.NOT_FOUND;
         }else{
             this.schoolService.delete(id);
             response.put("Success", "School with id " + id + " was deleted");
-            status = 200;
+            status = HttpStatus.OK;
         }
 
         return ResponseEntity.status(status).body(response);

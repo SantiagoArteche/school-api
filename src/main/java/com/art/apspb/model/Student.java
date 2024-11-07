@@ -18,7 +18,6 @@ public class Student {
 
     private Integer age;
 
-
     @ManyToOne
     @JoinColumn(name = "school_id")
     @JsonBackReference
