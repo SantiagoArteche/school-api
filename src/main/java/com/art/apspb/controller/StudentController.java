@@ -3,7 +3,6 @@ package com.art.apspb.controller;
 
 import com.art.apspb.dto.StudentDTO;
 import com.art.apspb.model.Student;
-import com.art.apspb.model.StudentProfile;
 import com.art.apspb.service.StudentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,16 +28,16 @@ public class StudentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> getStudentById(@PathVariable Integer id){
+    public ResponseEntity<Map<String, Object>> getStudentById(@PathVariable Integer id){
         Student student = this.studentService.getById(id);
         Map<String, Object> response = new HashMap<>();
         HttpStatus status;
 
         if(student == null){
-            response.put("Error", "Student profile with id " + id + " not found");
+            response.put("Error", "Student with id " + id + " not found");
             status = HttpStatus.NOT_FOUND;
         }else{
-            response.put("Student Profile", student);
+            response.put("Student", student);
             status = HttpStatus.OK;
         }
 
@@ -76,7 +75,7 @@ public class StudentController {
         HttpStatus status;
 
         if(updateStudent == null){
-            response.put("Error", "Student profile with id " + id + " not found");
+            response.put("Error", "Student with id " + id + " not found");
             status = HttpStatus.NOT_FOUND;
         }else{
             response.put("Success", "Student with id " + id + " was updated");

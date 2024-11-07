@@ -27,16 +27,20 @@ public class SchoolController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> getSchoolById(@PathVariable Integer id){
+    public ResponseEntity<Map<String, Object>> getSchoolById(@PathVariable Integer id){
         School school = this.schoolService.getById(id);
+        Map<String, Object> response = new HashMap<>();
+        HttpStatus status;
 
         if(school == null){
-            Map<String, String> notFound = new HashMap<>();
-            notFound.put("Error", "School with id " + id + " not found");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(notFound);
+            response.put("Error", "School with id " + id + " not found");
+            status = HttpStatus.NOT_FOUND;
+        }else{
+            response.put("School", school);
+            status = HttpStatus.OK;
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(school);
+        return ResponseEntity.status(status).body(response);
     }
 
     @PostMapping
