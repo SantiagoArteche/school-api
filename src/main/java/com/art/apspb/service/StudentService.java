@@ -30,12 +30,12 @@ public class StudentService implements IStudentService {
 
     @Override
     public List<Student> getByAge(Integer age) {
-        return this.studentRepository.getByAge(age).orElse(null);
+        return this.studentRepository.getByAge(age);
     }
 
     @Override
     public List<Student> getByName(String name) {
-        return this.studentRepository.getByName(name.toLowerCase()).orElse(null);
+        return this.studentRepository.getByName(name.toLowerCase());
     }
 
     @Override
@@ -57,6 +57,7 @@ public class StudentService implements IStudentService {
             }
 
             this.studentRepository.save(student);
+            return student;
         }
 
         return findStudent;
@@ -64,7 +65,7 @@ public class StudentService implements IStudentService {
 
     @Override
     public boolean delete(Integer id) {
-        Student findStudent= this.studentRepository.findById(id).orElse(null);
+        Student findStudent = this.studentRepository.findById(id).orElse(null);
         if(findStudent != null){
             this.studentRepository.deleteById(id);
             return true;

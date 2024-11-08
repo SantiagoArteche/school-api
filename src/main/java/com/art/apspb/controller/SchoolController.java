@@ -24,9 +24,7 @@ public class SchoolController {
 
     @GetMapping
     public ResponseEntity<List<SchoolResponseDTO>> getSchools(){
-        List<School> schools = this.schoolService.getAll();
-        List<SchoolResponseDTO> schoolResponseDto = SchoolResponseDTO.toSchoolResponse(schools);
-        return ResponseEntity.status(HttpStatus.OK).body(schoolResponseDto);
+        return ResponseEntity.status(HttpStatus.OK).body(this.schoolService.getAll());
     }
 
     @GetMapping("/{id}")

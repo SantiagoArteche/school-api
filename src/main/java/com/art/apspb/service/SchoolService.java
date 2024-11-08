@@ -1,6 +1,7 @@
 package com.art.apspb.service;
 
 import com.art.apspb.dto.SchoolDTO;
+import com.art.apspb.dto.SchoolResponseDTO;
 import com.art.apspb.model.School;
 import com.art.apspb.repository.SchoolRepository;
 import com.art.apspb.service.interfaces.ISchoolService;
@@ -18,8 +19,8 @@ public class SchoolService implements ISchoolService {
     }
 
     @Override
-    public List<School> getAll() {
-        return this.schoolRepository.findAll();
+    public List<SchoolResponseDTO> getAll() {
+        return SchoolResponseDTO.toSchoolResponse(this.schoolRepository.findAll());
     }
 
     @Override

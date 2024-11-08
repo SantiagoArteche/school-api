@@ -74,7 +74,7 @@ public class StudentController {
             status = HttpStatus.NOT_FOUND;
         }else{
             response.put("Success", "Student with id " + id + " was updated");
-            response.put("Student", dto);
+            response.put("Student", new StudentDTO(dto.name(), dto.age(), updateStudent.getSchool().getId()));
             status = HttpStatus.OK;
         }
 
