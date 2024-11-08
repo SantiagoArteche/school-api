@@ -5,10 +5,15 @@ import jakarta.validation.constraints.NotEmpty;
 
 public record SchoolDTO(
         @NotEmpty(message = "Name is required")
-        String name) {
-    public static School toSchool(SchoolDTO schoolDTO){
+        String name
+) {
+    public static School toSchool(SchoolDTO dto){
+        if(dto == null){
+            throw new NullPointerException("The school DTO is null");
+        }
+
         School school = new School();
-        school.setName(schoolDTO.name);
+        school.setName(dto.name);
         return school;
     }
 }

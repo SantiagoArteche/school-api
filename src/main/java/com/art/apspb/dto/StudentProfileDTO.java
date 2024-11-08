@@ -11,14 +11,18 @@ public record StudentProfileDTO(
         @NotNull(message = "Student id is required")
         Integer studentId
 ) {
-    public static StudentProfile toStudentProfile(StudentProfileDTO studentProfileDTO){
-        StudentProfile studentProfile = new StudentProfile();
-        if(studentProfileDTO.bio != null){
-            studentProfile.setBio(studentProfileDTO.bio);
+    public static StudentProfile toStudentProfile(StudentProfileDTO dto){
+        if(dto == null){
+            throw new NullPointerException("The student profile DTO is null");
         }
-        if(studentProfileDTO.studentId != null){
+
+        StudentProfile studentProfile = new StudentProfile();
+        if(dto.bio != null){
+            studentProfile.setBio(dto.bio);
+        }
+        if(dto.studentId != null){
             Student student = new Student();
-            student.setId(studentProfileDTO.studentId);
+            student.setId(dto.studentId);
             studentProfile.setStudent(student);
         }
         return studentProfile;

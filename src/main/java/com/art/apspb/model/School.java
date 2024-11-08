@@ -25,14 +25,9 @@ public class School {
         this.name = name;
     }
 
-
-
-
     public Integer getId() {
         return id;
     }
-
-
 
     public void setId(Integer id) {
         this.id = id;
@@ -54,5 +49,12 @@ public class School {
         this.students = students;
     }
 
-
+    @Override
+    public String toString() {
+        return "School{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", students=" + students +
+                '}';
+    }
 }

@@ -12,6 +12,7 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class HandleExceptions {
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleMethodArgumentNotValidException(
             MethodArgumentNotValidException exception

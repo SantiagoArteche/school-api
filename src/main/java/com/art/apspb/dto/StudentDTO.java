@@ -17,6 +17,10 @@ public record StudentDTO(
         Integer schoolId
 ) {
     public static Student toStudent(StudentDTO dto){
+        if(dto == null){
+            throw new NullPointerException("The student DTO is null");
+        }
+
         Student student = new Student();
         student.setAge(dto.age);
         student.setName(dto.name);

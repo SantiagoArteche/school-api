@@ -5,12 +5,16 @@ import com.art.apspb.model.Student;
 
 import java.util.List;
 
-public record SchoolResponseDTO ( String name,
-                                  Integer id,
+public record SchoolResponseDTO ( Integer id,
+                                  String name,
                                   List<Integer> studentsId){
     public static List<SchoolResponseDTO> toSchoolResponse(List<School> schools){
-        return schools.stream().map(school -> new SchoolResponseDTO(school.getName(),
-                        school.getId(),
+        if(schools == null){
+            throw new NullPointerException("The list of schools is null");
+        }
+
+        return schools.stream().map(school -> new SchoolResponseDTO(school.getId(),
+                        school.getName(),
                         school.getStudents()
                                 .stream()
                                 .map(Student::getId)
